@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Product Management</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 20px;
+      }
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        text-align: center;
+        color: #333;
+      }
+      form {
+        margin-bottom: 20px;
+      }
+      input,
+      select,
+      button {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+      }
+      button {
+        background-color: #28a745;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+      }
+      button:hover {
+        background-color: #218838;
+      }
+      .delete-btn {
+        background-color: #dc3545;
+      }
+      .delete-btn:hover {
+        background-color: #c82333;
+      }
+      .actions {
+        display: flex;
+        justify-content: space-between;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Product Management</h1>
+
+      <!-- Add Product Form -->
+      <h2>Add Product</h2>
+      <form id="addProductForm">
+        <input type="text" id="name" placeholder="Product Name" required />
+        <input type="text" id="title" placeholder="Product Title" required />
+        <input type="number" id="price" placeholder="Product Price" required />
+        <input
+          type="text"
+          id="category"
+          placeholder="Product Category"
+          required
+        />
+        <input type="url" id="image" placeholder="Image URL" required />
+        <button type="submit">Add Product</button>
+      </form>
+
+      <!-- Update Product Form -->
+      <h2>Update Product</h2>
+      <form id="updateProductForm">
+        <input
+          type="number"
+          id="productIdUpdate"
+          placeholder="Product ID"
+          required
+        />
+        <input type="text" id="nameUpdate" placeholder="Product Name" />
+        <input type="text" id="titleUpdate" placeholder="Product Title" />
+        <input type="number" id="priceUpdate" placeholder="Product Price" />
+        <input type="text" id="categoryUpdate" placeholder="Product Category" />
+        <input type="url" id="imageUpdate" placeholder="Image URL" />
+        <button type="submit">Update Product</button>
+      </form>
+
+      <!-- Delete Product Form -->
+      <h2>Delete Product</h2>
+      <form id="deleteProductForm">
+        <input
+          type="number"
+          id="productIdDelete"
+          placeholder="Product ID"
+          required
+        />
+        <button type="submit" class="delete-btn">Delete Product</button>
+      </form>
+    </div>
+
+    <script>
+      // Function to add product
+      document
+        .getElementById("addProductForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const product = {
+            name: document.getElementById("name").value,
+            title: document.getElementById("title").value,
+            price: document.getElementById("price").value,
+            category: document.getElementById("category").value,
+            image: document.getElementById("image").value,
+          };
+
+          try {
+            const response = await fetch("http://localhost:6400/api/product", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(product),
+            });
+            const result = await response.json();
+            alert(result.message || "Product added successfully!");
+          } catch (err) {
+            console.error("Error adding product:", err);
+            alert("Error adding product.");
+          }
+        });
+
+      // Function to update product
+      document
+        .getElementById("updateProductForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const productId = document.getElementById("productIdUpdate").value;
+          const product = {
+            name: document.getElementById("nameUpdate").value,
+            title: document.getElementById("titleUpdate").value,
+            price: document.getElementById("priceUpdate").value,
+            category: document.getElementById("categoryUpdate").value,
+            image: document.getElementById("imageUpdate").value,
+          };
+
+          try {
+            const response = await fetch(
+              `http://localhost:6400/api/product/${productId}`,
+              {
+                method: "PUT",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify(product),
+              }
+            );
+            const result = await response.json();
+            alert(result.message || "Product updated successfully!");
+          } catch (err) {
+            console.error("Error updating product:", err);
+            alert("Error updating product.");
+          }
+        });
+
+      // Function to delete product
+      document
+        .getElementById("deleteProductForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const productId = document.getElementById("productIdDelete").value;
+
+          try {
+            const response = await fetch(
+              `http://localhost:6400/api/product/${productId}`,
+              {
+                method: "DELETE",
+              }
+            );
+            const result = await response.json();
+            alert(result.message || "Product deleted successfully!");
+          } catch (err) {
+            console.error("Error deleting product:", err);
+            alert("Error deleting product.");
+          }
+        });
+    </script>
+  </body>
+</html>
